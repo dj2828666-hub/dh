@@ -2,77 +2,104 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小六爻指神术占卜工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小六爻指神术</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <style>
-        body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-        .card { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        .btn-primary { background-color: #334155; transition: all 0.2s; }
-        .btn-primary:hover { background-color: #1e293b; transform: translateY(-1px); }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700&display=swap');
+        
+        body { 
+            background-color: #f1f5f9; 
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .app-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .input-box {
+            @apply w-full border border-slate-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all bg-slate-50;
+            appearance: none;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2);
+        }
+        .btn-gradient:active {
+            transform: scale(0.98);
+        }
+        .result-tag {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="card w-full max-w-md p-6">
-        <div class="text-center mb-6">
-            <h1 class="text-xl font-bold text-slate-800 flex justify-center items-center gap-2">
-                ✨ 小六爻掐指神通术
+    <div class="app-card w-full max-w-md rounded-[2rem] shadow-2xl p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-slate-800 flex justify-center items-center gap-2" style="font-family: 'Noto Serif SC', serif;">
+                <span class="text-xl">✨</span> 小六爻指神术
             </h1>
-            <p id="currentDate" class="text-xs text-slate-500 mt-2">今日农历：加载中...</p>
+            <div id="lunarInfo" class="inline-block mt-3 px-4 py-1 bg-slate-100 rounded-full text-xs text-slate-500 font-medium">
+                今日农历：加载中...
+            </div>
+            <div id="solarTime" class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">
+                Current Time: --:--
+            </div>
         </div>
 
-        <div class="space-y-4">
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">年份</label>
-                    <input type="number" id="year" value="2025" class="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
+        <div class="space-y-6">
+            <div class="flex gap-3">
+                <div class="flex-1 text-center">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-tighter">年份</label>
+                    <input type="number" id="year" class="input-box text-center font-mono">
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">农历月份</label>
-                    <select id="month" class="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-                        </select>
+                <div class="flex-1 text-center">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-tighter">农历月</label>
+                    <select id="month" class="input-box text-center"></select>
                 </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">农历日期</label>
-                    <select id="day" class="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-                        </select>
+                <div class="flex-1 text-center">
+                    <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-tighter">农历日</label>
+                    <select id="day" class="input-box text-center"></select>
                 </div>
             </div>
 
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">时辰</label>
-                <select id="hour" class="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
-                    </select>
+            <div class="w-full">
+                <label class="block text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-tighter">起课时辰</label>
+                <select id="hour" class="input-box"></select>
             </div>
 
-            <button onclick="startDivination()" class="btn-primary w-full text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2">
-                ✨ 开始占卜
+            <button onclick="startDivination()" class="btn-gradient w-full text-white py-4 rounded-2xl font-bold text-base tracking-widest flex items-center justify-center gap-2 mt-4">
+                <span>✨</span> 开始占卜
             </button>
         </div>
 
-        <div id="resultArea" class="mt-8 hidden border-t pt-6">
-            <div class="text-center mb-6">
-                <h2 id="finalResultName" class="text-2xl font-bold text-slate-800">--</h2>
-                <div id="finalBadge" class="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs mt-2 font-bold">吉</div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-sm font-bold text-slate-700 flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    计算过程
-                </h3>
-                <div id="processSteps" class="space-y-2">
+        <div id="resultArea" class="mt-8 hidden animate-in fade-in duration-500">
+            <div class="relative p-6 rounded-3xl bg-slate-50 border border-slate-100 overflow-hidden">
+                <div class="text-center relative z-10">
+                    <div id="finalResultName" class="text-3xl font-bold text-slate-800 mb-1">--</div>
+                    <div id="finalBadge" class="inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">--</div>
+                </div>
+                
+                <div class="mt-8 space-y-4">
+                    <div class="flex items-center gap-2 text-slate-400">
+                        <div class="h-[1px] flex-1 bg-slate-200"></div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest">推算过程</span>
+                        <div class="h-[1px] flex-1 bg-slate-200"></div>
                     </div>
-            </div>
+                    <div id="processSteps" class="space-y-3"></div>
+                </div>
 
-            <div class="mt-6 p-4 bg-slate-50 rounded-lg">
-                <h3 class="text-sm font-bold text-slate-700 mb-2 flex items-center gap-1">
-                    ⚙️ 解读
-                </h3>
-                <p id="interpretation" class="text-sm text-slate-600 leading-relaxed italic">
-                    --
-                </p>
+                <div class="mt-6 pt-6 border-t border-dashed border-slate-200">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-1.5 h-1.5 rounded-full bg-slate-800"></div>
+                        <span class="text-xs font-bold text-slate-700">断辞解读</span>
+                    </div>
+                    <p id="interpretation" class="text-sm text-slate-500 leading-relaxed italic"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -80,38 +107,43 @@
     <script>
         const gods = ["大安", "留连", "速喜", "赤口", "小吉", "空亡"];
         const shichen = ["子时 (23-01)", "丑时 (01-03)", "寅时 (03-05)", "卯时 (05-07)", "辰时 (07-09)", "巳时 (09-11)", "午时 (11-13)", "未时 (13-15)", "申时 (15-17)", "酉时 (17-19)", "戌时 (19-21)", "亥时 (21-23)"];
-        const chineseNums = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
-
+        const chineseNums = ["", "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
         const infoMap = {
-            "大安": { badge: "吉", text: "大安事事昌，求谋在东方，失物去不远，宅舍保安康。行人身未动，病者主无妨，将军回旧舍，仔细更推详。" },
-            "留连": { badge: "平", text: "留连事难成，求谋日未明，官事只宜缓，去者未回程。失物南方见，急讨方心称，更须防口舌，人口且太平。" },
-            "速喜": { badge: "吉", text: "速喜喜临门，求财向南行，失物午未间，逢人路上寻。官事有贵人，夫人报喜信，田宅知吉庆，病者可安身。" },
-            "赤口": { badge: "凶", text: "赤口主口舌，官非切宜防，失物急去寻，行人有惊慌。鸡犬多作怪，病者出西方，更须防咀咒，恐怕染瘟皇。" },
-            "小吉": { badge: "吉", text: "小吉最吉昌，路上好商量，阴人来报喜，失物在坤方。行人立便至，交关真是强，凡事皆和合，病者事无妨。" },
-            "空亡": { badge: "凶", text: "空亡事不祥，阴人多乖张，求财无利益，行人有灾殃。失物寻不见，官事有刑伤，病人逢暗鬼，解禳保安康。" }
+            "大安": { badge: "大吉", color: "bg-emerald-100 text-emerald-700", text: "大安事事昌，求谋在东方，失物去不远，宅舍保安康。行人身未动，病者主无妨。" },
+            "留连": { badge: "中平", color: "bg-amber-100 text-amber-700", text: "留连事难成，求谋日未明，官事只宜缓，去者未回程。失物南方见，急讨方心称。" },
+            "速喜": { badge: "大吉", color: "bg-rose-100 text-rose-700", text: "速喜喜临门，求财向南行，失物午未间，逢人路上寻。官事有贵人，夫人报喜信。" },
+            "赤口": { badge: "凶", color: "bg-red-100 text-red-700", text: "赤口主口舌，官非切宜防，失物急去寻，行人有惊慌。鸡犬多作怪，更须防咀咒。" },
+            "小吉": { badge: "小吉", color: "bg-sky-100 text-sky-700", text: "小吉最吉昌，路上好商量，阴人来报喜，失物在坤方。行人立便至，交关真是强。" },
+            "空亡": { badge: "大凶", color: "bg-slate-200 text-slate-700", text: "空亡事不祥，阴人多乖张，求财无利益，行人有灾殃。失物寻不见，病人逢暗鬼。" }
         };
 
-        // 初始化下拉列表
-        function initForm() {
+        function init() {
+            // 1. 获取当前时间并自动填充农历
+            const date = new Date();
+            const lunar = Lunar.fromDate(date);
+            
+            // 更新标题农历信息
+            document.getElementById('lunarInfo').innerText = `今日农历：${lunar.getYearInGanZhi()}年 ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`;
+            document.getElementById('solarTime').innerText = `Current Time: ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+            // 2. 初始化下拉框
             const mSelect = document.getElementById('month');
-            for(let i=1; i<=12; i++) mSelect.options.add(new Option(i, i));
-            
             const dSelect = document.getElementById('day');
-            for(let i=1; i<=30; i++) dSelect.options.add(new Option(chineseNums[i], i));
-
             const hSelect = document.getElementById('hour');
-            shichen.forEach((s, i) => hSelect.options.add(new Option(s, i + 1)));
             
-            // 设置默认值（示例截图中的午时）
-            mSelect.value = 11;
-            dSelect.value = 25;
-            hSelect.value = 7; 
-        }
+            for(let i=1; i<=12; i++) mSelect.options.add(new Option(i + '月', i));
+            for(let i=1; i<=30; i++) dSelect.options.add(new Option(chineseNums[i], i));
+            shichen.forEach((s, i) => hSelect.options.add(new Option(s, i + 1)));
 
-        function calculateStep(startPos, count) {
-            // 逻辑：(起始位置 + 次数 - 1) % 6
-            let resultIdx = (startPos + count - 1) % 6;
-            return resultIdx === 0 ? 0 : resultIdx; 
+            // 3. 设置当前农历为默认值
+            document.getElementById('year').value = date.getFullYear();
+            mSelect.value = lunar.getMonth();
+            dSelect.value = lunar.getDay();
+            
+            // 自动计算当前时辰
+            const hour = date.getHours();
+            let hIdx = Math.floor((hour + 1) % 24 / 2);
+            hSelect.value = hIdx + 1;
         }
 
         function startDivination() {
@@ -119,42 +151,46 @@
             const d = parseInt(document.getElementById('day').value);
             const h = parseInt(document.getElementById('hour').value);
 
-            // 1. 月份计算 (从大安(0)开始)
             let mIdx = (m - 1) % 6;
             let mResult = gods[mIdx];
 
-            // 2. 日期计算 (从月份结果开始)
             let dIdx = (mIdx + d - 1) % 6;
             let dResult = gods[dIdx];
 
-            // 3. 时辰计算 (从日期结果开始)
             let hIdx = (dIdx + h - 1) % 6;
             let hResult = gods[hIdx];
 
-            // 更新UI
-            document.getElementById('resultArea').classList.remove('hidden');
+            // UI渲染
+            const resArea = document.getElementById('resultArea');
+            resArea.classList.remove('hidden');
+            
             document.getElementById('finalResultName').innerText = hResult;
-            document.getElementById('finalBadge').innerText = infoMap[hResult].badge;
+            const badge = document.getElementById('finalBadge');
+            badge.innerText = infoMap[hResult].badge;
+            badge.className = `inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${infoMap[hResult].color}`;
             document.getElementById('interpretation').innerText = infoMap[hResult].text;
 
-            const stepsHtml = `
-                <div class="flex items-center gap-3 text-sm">
-                    <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold">1</span>
-                    <span class="text-slate-600">月份(${m})：从大安开始数${m}次 → <span class="font-bold text-slate-800">${mResult}</span></span>
+            const steps = [
+                { label: '月', val: m, from: '大安', to: mResult },
+                { label: '日', val: chineseNums[d], from: mResult, to: dResult },
+                { label: '时', val: shichen[h-1].split(' ')[0], from: dResult, to: hResult }
+            ];
+
+            document.getElementById('processSteps').innerHTML = steps.map((s, i) => `
+                <div class="flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 rounded-md bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold">${i+1}</span>
+                        <span class="text-slate-500">${s.label}(${s.val})</span>
+                    </div>
+                    <div class="text-slate-400">从${i===0?'大安':steps[i-1].to}起 → <span class="text-slate-800 font-bold">${s.to}</span></div>
                 </div>
-                <div class="flex items-center gap-3 text-sm">
-                    <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold">2</span>
-                    <span class="text-slate-600">日期(${chineseNums[d]})：从${mResult}开始数${d}次 → <span class="font-bold text-slate-800">${dResult}</span></span>
-                </div>
-                <div class="flex items-center gap-3 text-sm">
-                    <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-xs font-bold">3</span>
-                    <span class="text-slate-600">时辰(${shichen[h-1].split(' ')[0]})：从${dResult}开始数${h}次 → <span class="font-bold text-slate-800">${hResult}</span></span>
-                </div>
-            `;
-            document.getElementById('processSteps').innerHTML = stepsHtml;
+            `).join('');
+
+            // 自动滚动到结果
+            resArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        window.onload = initForm;
+        window.onload = init;
     </script>
 </body>
 </html>
