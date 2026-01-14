@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小茗同学专用导航</title>
+    <title>改命实用工具箱</title>
     <style>
         :root {
             /* 主色调：深藏青色，沉稳大气 */
             --primary-color: #2c3e50; 
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
+            --text-main: #34495e;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            /* 优先使用系统楷体，增加国学氛围 */
+            font-family: "STKaiti", "KaiTi", "PingFang SC", "Segoe UI", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 20px 0;
@@ -22,6 +24,7 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* 清除移动端点击高亮 */
         }
 
         header {
@@ -30,17 +33,18 @@
         }
 
         header h1 {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             color: var(--primary-color);
-            font-weight: 600;
-            letter-spacing: 1px;
+            font-weight: 700;
+            letter-spacing: 2px;
             margin: 0;
         }
         
         header p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #7f8c8d;
-            margin-top: 8px;
+            margin-top: 10px;
+            letter-spacing: 1px;
         }
 
         /* 导航容器 */
@@ -54,54 +58,62 @@
 
         .nav-card {
             background: var(--card-bg);
-            padding: 25px 15px;
-            border-radius: 20px;
+            padding: 28px 15px;
+            border-radius: 24px;
             text-decoration: none;
-            color: var(--primary-color);
+            color: var(--text-main);
             text-align: center;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-            transition: all 0.2s ease;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.8);
         }
         
+        /* 手机端点击反馈 */
         .nav-card:active {
-            transform: scale(0.97);
-            background-color: #f8f9fa;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+            transform: scale(0.94);
+            background-color: #fcfcfc;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         }
 
         /* 图标样式 */
         .icon {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            font-size: 3rem;
+            margin-bottom: 15px;
+            /* 给图标加一点点呼吸感 */
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
         .title {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             line-height: 1.4;
         }
 
         footer {
             margin-top: auto;
-            padding: 25px;
+            padding: 30px;
             font-size: 0.85rem;
-            color: #95a5a6;
+            color: #bdc3c7;
+            text-align: center;
+        }
+
+        /* 针对超小屏幕手机优化 */
+        @media (max-width: 350px) {
+            .container { gap: 12px; }
+            .icon { font-size: 2.5rem; }
+            .title { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🚀小茗同学导航</h1>
-        <p>乾坤妙法 · 尽在掌握</p>
+        <h1>🚀 改命实用工具箱</h1>
+        <p>正心正念 · 修好当下</p>
     </header>
 
     <div class="container">
@@ -137,9 +149,10 @@
     </div>
 
     <footer>
-        © 2026 小茗同学 · 潜心研发
+        © 2026 · Dy：小茗同学
     </footer>
 
 </body>
 </html>
+
 
